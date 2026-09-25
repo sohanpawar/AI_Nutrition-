@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js
+apps/web/.next/
+apps/web/out/
+apps/web/build/
+
+# Python
+services/api/.venv/
+services/api/venv/
+**/__pycache__/
+**/*.py[cod]
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Local DBs / env
+*.db
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Logs / coverage
+logs/
+*.log
+coverage/
+.coverage
+htmlcov/
+
+# Vercel / misc
+.vercel
+*.tsbuildinfo
+
+# Eval run artifacts (keep README only)
+docs/eval-runs/*.json
+!docs/eval-runs/README.md
