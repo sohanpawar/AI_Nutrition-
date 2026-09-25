@@ -1,0 +1,16 @@
+.git
+.venv
+**/__pycache__
+**/*.py[cod]
+**/.pytest_cache
+**/.mypy_cache
+apps/web/node_modules
+apps/web/.next
+services/api/.venv
+services/api/*.db
+**/.env
+**/.env.*
+!**/.env.example
+docs/eval-runs/*.json
+*.log
+.DS_Store

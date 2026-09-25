@@ -29,7 +29,8 @@ git push -u origin main
 ## 2. Railway — API + Postgres
 
 1. New project → **Deploy from GitHub** → select this repo.
-2. Set **Root Directory** to `services/api` (uses `Dockerfile` + `railway.toml`).
+2. Build config is at the **repo root** (`Dockerfile` + `railway.toml`) so Railway does **not** need Railpack language detection.
+   - Optional: set **Root Directory** to `services/api` instead — then the nested `services/api/Dockerfile` is used.
 3. Add plugin: **PostgreSQL**.
 4. Link Postgres so `DATABASE_URL` is injected (Railway does this when you reference the DB).
 5. Set variables on the API service:
