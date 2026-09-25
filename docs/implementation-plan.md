@@ -246,20 +246,20 @@ Phases 1–5 are mostly sequential. Phase 6 can start as soon as Phase 5 lands. 
 
 ### Tasks
 
-- [ ] Push repo to GitHub *(repo prepared locally; needs `gh auth` — see below)*
+- [x] Push repo to GitHub — https://github.com/sohanpawar/ai-nutrition
 - [x] Dockerfile / start command for FastAPI on Railway (`services/api/Dockerfile`, `railway.toml`)
-- [x] Railway: Postgres + API service; set secrets (`DATABASE_URL`, LLM keys, `CORS_ORIGINS`) — documented in [`docs/deploy.md`](./deploy.md)
+- [x] Railway: Postgres + API service; set secrets (`DATABASE_URL`, LLM keys, `CORS_ORIGINS`) — documented in [`docs/deploy.md`](./deploy.md) *(needs `railway login` in dashboard/CLI)*
 - [x] Healthcheck → `GET /health` (Railway `healthcheckPath` + Docker HEALTHCHECK)
-- [x] Vercel: deploy `apps/web`; set `NEXT_PUBLIC_API_URL` to Railway URL — `apps/web/vercel.json` + deploy doc
+- [x] Vercel: deploy `apps/web`; set `NEXT_PUBLIC_API_URL` to Railway URL — `apps/web/vercel.json` + deploy doc *(needs `vercel login`)*
 - [x] Restrict CORS to the Vercel origin (`CORS_ORIGINS` env; prod instructions in deploy doc)
 - [x] Smoke test script: in-scope, refusal, multi-turn, null sources (`scripts/smoke_prod.py`)
 - [x] Confirm Sources panel still empty in production (checklist in deploy doc)
 
 ### Deliverables
 
-- Live frontend URL *(create after connecting Vercel to GitHub)*
-- Live backend + DB *(create after connecting Railway to GitHub)*
-- GitHub remote *(pending auth)*
+- Live frontend URL *(pending Vercel login + project create — see [`docs/deploy.md`](./deploy.md))*
+- Live backend + DB *(pending Railway login + project create — see [`docs/deploy.md`](./deploy.md))*
+- GitHub remote: https://github.com/sohanpawar/ai-nutrition
 - [`docs/deploy.md`](./deploy.md) runbook
 
 ### Exit criteria

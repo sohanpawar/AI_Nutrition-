@@ -29,7 +29,7 @@ Source of truth for scope and design:
 | 4 LLM structured outputs | Done |
 | 5 Scope limits & system prompt | Done |
 | 6 Eval set & prompt discipline | Done |
-| 7 Deploy (GitHub, Vercel, Railway) | Ready — see [`docs/deploy.md`](docs/deploy.md) |
+| 7 Deploy (GitHub, Vercel, Railway) | GitHub live; Railway/Vercel pending login — [`docs/deploy.md`](docs/deploy.md) |
 | 8 Failure log & submission | Next |
 
 ## Setup
@@ -136,6 +136,8 @@ python scripts/run_eval.py --suite all --api-url http://localhost:8000 \
 - After every prompt edit: re-run the full set; never hardcode eval answers in app code
 
 ## Deploy (Phase 7)
+
+Repo: https://github.com/sohanpawar/ai-nutrition
 
 Full runbook: [`docs/deploy.md`](docs/deploy.md)
 
