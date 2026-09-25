@@ -1,5 +1,9 @@
 /**
  * Client helpers for the FastAPI backend.
+ *
+ * In production we call same-origin `/api/*` (empty base URL). Next.js route
+ * handlers proxy those to Railway via BACKEND_API_URL — avoids CORS and the
+ * classic empty NEXT_PUBLIC_API_URL → Vercel 404 bug.
  */
 
 import type {
@@ -9,8 +13,15 @@ import type {
   ErrorResponse,
 } from "./types";
 
-export const API_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+function clientApiBase(): string {
+  const raw = process.env.NEXT_PUBLIC_API_URL;
+  if (raw == null || raw.trim() === "") {
+    return "";
+  }
+  return raw.trim().replace(/\/$/, "");
+}
+
+export const API_URL = clientApiBase();
 
 async function readError(response: Response): Promise<string> {
   let message = `Request failed (${response.status})`;

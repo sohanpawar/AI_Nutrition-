@@ -59,18 +59,18 @@ Postgres URLs from Railway (`postgresql://…`) are normalized to SQLAlchemy `po
 
 1. Import the same GitHub repo in Vercel.
 2. **Required:** Project Settings → General → **Root Directory** = `apps/web`  
-   (If this is wrong/empty, Vercel shows `404: NOT_FOUND` even when the deploy looks “Ready”.)  
-   Repo-root `vercel.json` also points `@vercel/next` at `apps/web/package.json` as a fallback.
+   (If this is wrong/empty, Vercel shows `404: NOT_FOUND` even when the deploy looks “Ready”.)
 3. Framework Preset: **Next.js**. Leave **Output Directory** empty (default).
-4. Environment variable:
+4. Environment variables:
 
 | Variable | Value |
 | --- | --- |
-| `NEXT_PUBLIC_API_URL` | Railway public API URL (no trailing slash), e.g. `https://….up.railway.app` |
+| `BACKEND_API_URL` | Railway public API URL (no trailing slash), e.g. `https://….up.railway.app` — used by Next.js `/api` proxies |
+| `NEXT_PUBLIC_API_URL` | Leave **empty/unset** in production so the browser calls same-origin `/api/chat` (proxied to Railway). An empty string without proxies causes `Request failed (404)`. |
 
 5. Redeploy (**Deployments → … → Redeploy**, clear cache if the first deploy 404’d).
 6. Note the production URL (`https://….vercel.app`).
-7. Go back to Railway and set `CORS_ORIGINS` to that exact Vercel origin (scheme + host, no path). Redeploy API if needed.
+7. Railway `CORS_ORIGINS` is optional when the browser only talks to Vercel proxies; still set it if you call Railway directly from the client.
 
 ## 4. Smoke test (prod)
 
