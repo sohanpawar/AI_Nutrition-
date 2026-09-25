@@ -55,16 +55,22 @@ Postgres URLs from Railway (`postgresql://…`) are normalized to SQLAlchemy `po
 
 ## 3. Vercel — Web
 
+> Use the **Vercel** URL for the chat UI. The Railway URL is API-only (`/health`, `/api/chat`). Opening Railway in a browser is not the app.
+
 1. Import the same GitHub repo in Vercel.
-2. Set **Root Directory** to `apps/web`.
-3. Environment variable:
+2. **Required:** Project Settings → General → **Root Directory** = `apps/web`  
+   (If this is wrong/empty, Vercel shows `404: NOT_FOUND` even when the deploy looks “Ready”.)  
+   Repo-root `vercel.json` also points `@vercel/next` at `apps/web/package.json` as a fallback.
+3. Framework Preset: **Next.js**. Leave **Output Directory** empty (default).
+4. Environment variable:
 
 | Variable | Value |
 | --- | --- |
 | `NEXT_PUBLIC_API_URL` | Railway public API URL (no trailing slash), e.g. `https://….up.railway.app` |
 
-4. Deploy. Note the production URL (`https://….vercel.app`).
-5. Go back to Railway and set `CORS_ORIGINS` to that exact Vercel origin (scheme + host, no path). Redeploy API if needed.
+5. Redeploy (**Deployments → … → Redeploy**, clear cache if the first deploy 404’d).
+6. Note the production URL (`https://….vercel.app`).
+7. Go back to Railway and set `CORS_ORIGINS` to that exact Vercel origin (scheme + host, no path). Redeploy API if needed.
 
 ## 4. Smoke test (prod)
 

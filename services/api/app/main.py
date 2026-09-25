@@ -86,6 +86,16 @@ def create_app() -> FastAPI:
             },
         )
 
+    @app.get("/")
+    def root() -> dict[str, str]:
+        """Avoid a bare 404 on the Railway public URL (UI is on Vercel)."""
+        return {
+            "service": "AI Nutrition Assistant API",
+            "health": "/health",
+            "chat": "POST /api/chat",
+            "note": "Open the Vercel frontend URL in your browser; this host is the API only.",
+        }
+
     app.include_router(api_router)
     return app
 
