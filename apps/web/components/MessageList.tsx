@@ -47,10 +47,10 @@ export function MessageList({
           <div className="empty-icon">
             <LeafIcon size={26} />
           </div>
-          <h2>Ask about food & nutrition</h2>
+          <h2>Fuel your curiosity</h2>
           <p>
-            Get clear answers on nutrients, storage safety, and cooking methods.
-            Calorie targets, weight goals, and medical advice stay out of scope.
+            Tap a colorful starter below, or type anything about nutrients,
+            leftovers, or cooking methods.
           </p>
           {onSuggestionSend ? (
             <div className="suggestion-row">

@@ -149,6 +149,11 @@ export function ChatShell() {
 
   return (
     <div className="chat-shell">
+      <div className="ambient" aria-hidden="true">
+        <span className="orb orb-a" />
+        <span className="orb orb-b" />
+        <span className="orb orb-c" />
+      </div>
       <header className="chat-header">
         <div className="brand-lockup">
           <div className="brand-mark" aria-hidden="true">
@@ -157,6 +162,9 @@ export function ChatShell() {
           <div>
             <p className="chat-eyebrow">AI Nutrition</p>
             <h1 className="chat-title">Assistant</h1>
+            <p className="chat-tagline">
+              Fresh answers on food, nutrients, and kitchen safety.
+            </p>
           </div>
         </div>
         <button
