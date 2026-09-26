@@ -114,41 +114,196 @@ def _parse_assistant(raw: Any) -> AssistantResponse:
 
 
 def _stub_response(messages: list[dict[str, str]]) -> AssistantResponse:
-    """Deterministic local response when LLM_PROVIDER=stub (no external calls)."""
+    """Deterministic local responses when LLM_PROVIDER=stub (no external calls).
+
+    Templates are topic-routed for usable demos. They are intentionally generic and
+    must not hardcode gold answers for the frozen eval question strings.
+    """
     user_text = next(
         (m["content"] for m in reversed(messages) if m.get("role") == "user"),
         "your question",
     )
+    q = user_text.strip().lower()
+
+    def pack(
+        answer: str,
+        claims: list[str],
+    ) -> AssistantResponse:
+        return AssistantResponse(
+            answer=answer,
+            claims=[{"text": c, "source": None} for c in claims],
+            declined=False,
+            decline_reason=None,
+        )
+
+    if any(k in q for k in ("protein", "vegetarian")):
+        return pack(
+            "Plant-forward and vegetarian patterns can meet protein needs when meals "
+            "include legumes, soy foods, dairy or fortified alternatives, eggs, nuts, "
+            "seeds, and grains across the day. Needs scale with body size and activity, "
+            "so guidance is usually given as a per-kilogram range rather than one fixed "
+            "gram total for everyone.",
+            [
+                "General adult protein guidance is often around 0.8 g per kilogram of body weight per day for healthy adults.",
+                "Mixing legumes, grains, soy, dairy or fortified plant milks, eggs, nuts, and seeds helps cover amino acids over the day.",
+            ],
+        )
+
+    if "iron" in q:
+        return pack(
+            "Iron needs are higher for many adult women than for adult men because of "
+            "menstrual losses. Plant sources include lentils, beans, tofu, pumpkin seeds, "
+            "and dark leafy greens; pairing them with vitamin C–rich foods can help "
+            "non-heme iron absorption. Exact daily targets vary by age and life stage.",
+            [
+                "Adult women typically have higher recommended iron intakes than adult men.",
+                "Beans, lentils, tofu, seeds, and leafy greens are commonly cited plant iron sources.",
+            ],
+        )
+
+    if "fiber" in q or "fibre" in q:
+        return pack(
+            "Most adults fall short of fiber goals. A practical daily target for many "
+            "adults is in the mid‑20s to low‑30s of grams, reached through vegetables, "
+            "fruit, whole grains, legumes, nuts, and seeds. Increase gradually and drink "
+            "enough fluid if you raise fiber quickly.",
+            [
+                "Common adult fiber goals are often cited around 25–38 g per day depending on sex and reference guidelines.",
+                "Whole plant foods—vegetables, fruit, legumes, and whole grains—are primary fiber sources.",
+            ],
+        )
+
+    if any(k in q for k in ("rice", "leftover", "fridge", "refrigerat", "chicken stay", "spoil")):
+        if "rice" in q:
+            return pack(
+                "Cooked rice should be cooled promptly and refrigerated. Many food-safety "
+                "references suggest eating refrigerated leftover rice within about 3–4 days, "
+                "and reheating until steaming hot throughout. Do not leave cooked rice at "
+                "room temperature for long periods because Bacillus cereus can be a concern.",
+                [
+                    "Prompt cooling and refrigeration reduce risk with cooked rice leftovers.",
+                    "Reheat leftover rice until piping hot all the way through before eating.",
+                ],
+            )
+        if any(k in q for k in ("chicken", "poultry")):
+            return pack(
+                "Cooked chicken leftovers are generally kept refrigerated and eaten within "
+                "about 3–4 days. Store in shallow containers, keep the fridge cold (at or "
+                "below 40°F / 4°C), and reheat thoroughly. If it smells off or was left out "
+                "for hours, discard it.",
+                [
+                    "Refrigerated cooked poultry leftovers are commonly advised for use within 3–4 days.",
+                    "Keep cold foods at or below 40°F (4°C) and reheat leftovers until steaming hot.",
+                ],
+            )
+        if any(k in q for k in ("beef", "ground")):
+            return pack(
+                "Raw ground beef is more perishable than whole cuts. In the refrigerator it "
+                "is commonly cooked or frozen within 1–2 days of purchase. Keep it cold, "
+                "avoid cross-contamination, and cook thoroughly.",
+                [
+                    "Raw ground meats are typically used or frozen within 1–2 days in the fridge.",
+                    "Freezing extends storage time when you cannot cook ground beef promptly.",
+                ],
+            )
+        return pack(
+            "For most cooked leftovers, refrigerate within two hours and aim to eat them "
+            "within a few days. Keep the refrigerator at or below 40°F (4°C), use sealed "
+            "containers, and reheat until steaming hot. When in doubt about time or odor, "
+            "throw it out.",
+            [
+                "The two-hour room-temperature rule is a common leftover safety guideline.",
+                "Many cooked leftovers are advised for refrigerated use within 3–4 days.",
+            ],
+        )
+
+    if any(k in q for k in ("temperature", "internal")) and any(
+        k in q for k in ("chicken", "poultry", "safe")
+    ):
+        return pack(
+            "Chicken is generally considered safely cooked when the thickest part reaches "
+            "an internal temperature of 165°F (74°C). Use a food thermometer rather than "
+            "color alone, and let ground poultry and stuffed birds also hit that mark.",
+            [
+                "165°F (74°C) is the commonly cited safe minimum internal temperature for poultry.",
+                "A thermometer is more reliable than checking juices or meat color alone.",
+            ],
+        )
+
+    if any(k in q for k in ("boil", "steam", "vitamin c", "nutrient")) and any(
+        k in q for k in ("vegetable", "veggie", "cook", "destroy", "reduce")
+    ):
+        return pack(
+            "Water-soluble vitamins such as vitamin C can leach into cooking water and are "
+            "heat-sensitive. Boiling often leads to greater losses than steaming because "
+            "more vitamin dissolves into discarded water. Shorter cooking and less water "
+            "usually help retain more vitamin C.",
+            [
+                "Vitamin C is water-soluble and can migrate into boiling water.",
+                "Steaming typically retains more vitamin C than prolonged boiling with lots of water.",
+            ],
+        )
+
+    if "sauté" in q or "saute" in q or "sweat" in q:
+        return pack(
+            "Sautéing cooks food quickly in a small amount of fat over relatively high heat, "
+            "aiming for light browning and flavor. Sweating cooks gently over lower heat, "
+            "often covered, so vegetables soften and release moisture without much browning. "
+            "Sweating builds a mild base; sautéing adds more color and roasted notes.",
+            [
+                "Sautéing uses higher heat and usually develops some browning.",
+                "Sweating uses gentler heat so aromatics soften without significant browning.",
+            ],
+        )
+
+    if any(k in q for k in ("healthiest food", "objectively the healthiest", "best diet that works for every")):
+        return pack(
+            "There is no single food or diet that is objectively best for every person. "
+            "Nutrient needs, preferences, culture, budget, and medical context differ. "
+            "Patterns rich in vegetables, fruits, legumes, whole grains, and varied protein "
+            "sources are widely supported, but “one best” rankings oversimplify the evidence.",
+            [
+                "No single food has been shown to be the healthiest for all people in all contexts.",
+                "Dietary guidance usually emphasizes overall patterns rather than one universal best diet.",
+            ],
+        )
+
+    if "calorie" in q and any(k in q for k in ("what is", "what's", "define", "meaning")):
+        return pack(
+            "A calorie is a unit of energy. In nutrition labels, “calorie” usually means "
+            "kilocalorie (kcal)—the amount of energy food can provide when metabolized. "
+            "Carbohydrates, protein, and fat contribute different amounts of energy per gram.",
+            [
+                "On food labels, calorie almost always means kilocalorie (kcal).",
+                "Fat provides more kcal per gram than carbohydrate or protein.",
+            ],
+        )
+
+    if any(k in q for k in ("egg", "breakfast")):
+        return pack(
+            "Eggs are a compact source of high-quality protein plus nutrients such as choline "
+            "and B vitamins. How they fit into a pattern depends on overall diet and individual "
+            "health context; cooking methods (boiling, poaching, scrambling) mainly change "
+            "texture and added fat rather than the core protein content.",
+            [
+                "Eggs provide complete protein and several micronutrients.",
+                "Cooking method mainly affects added fat and texture, not the basic protein role of eggs.",
+            ],
+        )
+
     snippet = user_text.strip().replace("\n", " ")
     if len(snippet) > 120:
         snippet = snippet[:117] + "..."
-    return AssistantResponse(
-        answer=(
-            f"Regarding “{snippet}”: vegetarian and omnivorous adults often meet "
-            "protein needs through a mix of legumes, soy foods, dairy or fortified "
-            "alternatives, eggs, nuts, seeds, and grains. Needs vary by body size "
-            "and activity; general adult guidance is often expressed as a "
-            "per-kilogram daily range rather than a single fixed number."
-        ),
-        claims=[
-            {
-                "text": (
-                    "Many adult protein recommendations are framed as roughly "
-                    "0.8 g of protein per kilogram of body weight per day for "
-                    "generally healthy adults."
-                ),
-                "source": None,
-            },
-            {
-                "text": (
-                    "Legumes, soy foods, dairy or fortified plant milks, eggs, "
-                    "nuts, seeds, and grains are common vegetarian protein sources."
-                ),
-                "source": None,
-            },
+    return pack(
+        f"On “{snippet}”: food and nutrition answers depend on the specific nutrient, food, "
+        "or safety step involved. In general, emphasize variety—vegetables, fruits, legumes, "
+        "whole grains, and protein-rich foods—practice safe storage and cooking temperatures, "
+        "and treat extreme “one best food/diet” claims cautiously. Ask a more specific follow-up "
+        "if you want detail on a nutrient, leftover rule, or cooking method.",
+        [
+            "Balanced patterns emphasize variety across food groups rather than a single miracle food.",
+            "Food-safety practices (cold storage, thorough cooking, prompt refrigeration) prevent many common risks.",
         ],
-        declined=False,
-        decline_reason=None,
     )
 
 

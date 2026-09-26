@@ -59,6 +59,27 @@ def test_chat_stub_provider_returns_contract_shape(client) -> None:
     assert body["declined"] is False
 
 
+def test_stub_answers_differ_by_topic(client) -> None:
+    protein = client.post(
+        "/api/chat",
+        json={"conversation_id": None, "message": "How much protein do vegetarians need?"},
+    ).json()["answer"]
+    fridge = client.post(
+        "/api/chat",
+        json={
+            "conversation_id": None,
+            "message": "How long can cooked chicken stay in the fridge?",
+        },
+    ).json()["answer"]
+    assert "protein" in protein.lower()
+    assert (
+        "chicken" in fridge.lower()
+        or "poultry" in fridge.lower()
+        or "leftover" in fridge.lower()
+    )
+    assert protein != fridge
+
+
 def test_chat_reuses_conversation_and_persists_history(client) -> None:
     first = client.post(
         "/api/chat",

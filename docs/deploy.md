@@ -37,12 +37,14 @@ git push -u origin main
 
 | Variable | Value |
 | --- | --- |
+| `LLM_PROVIDER` | `stub` for demos without keys, or `openai` / `anthropic` for real answers |
+| `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` | Required when provider is not `stub` |
+| `MODEL_NAME` | e.g. `gpt-4o-mini` |
 | `DATABASE_URL` | From Postgres plugin (auto) |
 | `CORS_ORIGINS` | Your Vercel origin, e.g. `https://your-app.vercel.app` (comma-separate if multiple) |
-| `LLM_PROVIDER` | `stub` (or `openai` / `anthropic`) |
-| `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` | Only if not stub |
-| `MODEL_NAME` | e.g. `gpt-4o-mini` |
 | `RATE_LIMIT_PER_MINUTE` | `30` (optional) |
+
+> **Same answer for every question?** That means `LLM_PROVIDER=stub` (default). Stub is topic-routed for demos, but for true model answers set `LLM_PROVIDER=openai` and `OPENAI_API_KEY`, then redeploy.
 
 6. Healthcheck is `/health` (configured in `railway.toml`). Confirm:
 
