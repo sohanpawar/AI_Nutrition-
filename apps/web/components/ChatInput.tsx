@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, KeyboardEvent, useState } from "react";
+import { SendIcon } from "./Icons";
 
 type ChatInputProps = {
   disabled?: boolean;
@@ -40,12 +41,18 @@ export function ChatInput({ disabled = false, onSend }: ChatInputProps) {
         value={value}
         onChange={(event) => setValue(event.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="Ask a nutrition or food-safety question…"
+        placeholder="Ask about protein, leftovers, or cooking methods…"
         disabled={disabled}
         maxLength={4000}
       />
-      <button type="submit" disabled={disabled || !value.trim()}>
-        {disabled ? "Sending…" : "Send"}
+      <button
+        type="submit"
+        className="send-button"
+        disabled={disabled || !value.trim()}
+        aria-label={disabled ? "Sending" : "Send message"}
+      >
+        <SendIcon size={17} />
+        <span>{disabled ? "Sending…" : "Send"}</span>
       </button>
     </form>
   );

@@ -1,4 +1,5 @@
 import type { Claim } from "@/lib/types";
+import { BookIcon } from "./Icons";
 
 type SourcesPanelProps = {
   claims: Claim[];
@@ -14,12 +15,18 @@ export function SourcesPanel({ claims }: SourcesPanelProps) {
     .filter((source): source is string => Boolean(source && source.trim()));
 
   return (
-    <aside className="sources-panel" aria-label="Sources">
-      <h2 className="sources-title">Sources</h2>
+    <aside className="sources-panel panel-glass" aria-label="Sources">
+      <div className="sources-heading">
+        <BookIcon size={18} />
+        <h2 className="sources-title">Sources</h2>
+      </div>
       {sources.length === 0 ? (
-        <p className="sources-empty">
-          Sources will appear here when citations are available.
-        </p>
+        <div className="sources-empty-card">
+          <p className="sources-empty">
+            Citations will show here in Milestone 2. For now, answers stay
+            structured with claims but no linked sources.
+          </p>
+        </div>
       ) : (
         <ol className="sources-list">
           {sources.map((source, index) => (

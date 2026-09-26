@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { getConversation, postChat } from "@/lib/api";
 import type { Claim } from "@/lib/types";
 import { ChatInput } from "./ChatInput";
+import { AlertIcon, LeafIcon, PlusIcon } from "./Icons";
 import { MessageList } from "./MessageList";
 import type { UiMessage } from "./MessageBubble";
 import { SourcesPanel } from "./SourcesPanel";
@@ -61,7 +62,6 @@ export function ChatShell() {
         setSelectedMessageId(lastAssistant?.id ?? null);
       } catch {
         if (cancelled) return;
-        // Stale id (404) or network — start fresh.
         try {
           window.localStorage.removeItem(STORAGE_KEY);
         } catch {
@@ -124,8 +124,6 @@ export function ChatShell() {
         declined: response.declined,
       };
 
-      // Replace optimistic user id with server-backed thread continuity;
-      // user row is persisted server-side; keep local bubble as-is.
       setMessages((prev) => [...prev, assistantMessage]);
       setSelectedMessageId(assistantMessage.id);
     } catch (err) {
@@ -152,9 +150,14 @@ export function ChatShell() {
   return (
     <div className="chat-shell">
       <header className="chat-header">
-        <div>
-          <p className="chat-eyebrow">AI Nutrition</p>
-          <h1 className="chat-title">Assistant</h1>
+        <div className="brand-lockup">
+          <div className="brand-mark" aria-hidden="true">
+            <LeafIcon size={22} />
+          </div>
+          <div>
+            <p className="chat-eyebrow">AI Nutrition</p>
+            <h1 className="chat-title">Assistant</h1>
+          </div>
         </div>
         <button
           type="button"
@@ -162,12 +165,13 @@ export function ChatShell() {
           onClick={handleNewChat}
           disabled={sending || messages.length === 0}
         >
+          <PlusIcon size={15} />
           New chat
         </button>
       </header>
 
       <div className="chat-body">
-        <section className="chat-main" aria-label="Conversation">
+        <section className="chat-main panel-glass" aria-label="Conversation">
           {loadingHistory ? (
             <div className="message-list message-list-empty">
               <p>Loading conversation…</p>
@@ -177,11 +181,14 @@ export function ChatShell() {
               messages={messages}
               selectedMessageId={selectedMessageId}
               onSelectMessage={setSelectedMessageId}
+              onSuggestionSend={handleSend}
+              suggestionsDisabled={sending}
             />
           )}
           {error ? (
             <div className="chat-error" role="alert">
-              {error}
+              <AlertIcon size={16} />
+              <span>{error}</span>
             </div>
           ) : null}
           <ChatInput disabled={sending || loadingHistory} onSend={handleSend} />

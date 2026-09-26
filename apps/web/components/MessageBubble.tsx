@@ -1,4 +1,5 @@
 import type { Claim } from "@/lib/types";
+import { AlertIcon, SparkIcon, UserIcon } from "./Icons";
 
 export type UiMessage = {
   id: string;
@@ -33,7 +34,10 @@ export function MessageBubble({
       disabled={isUser}
       aria-pressed={!isUser ? selected : undefined}
     >
-      <span className="bubble-role">{isUser ? "You" : "Assistant"}</span>
+      <span className="bubble-meta">
+        {isUser ? <UserIcon size={13} /> : <SparkIcon size={13} />}
+        {isUser ? "You" : "Assistant"}
+      </span>
       <p className="bubble-text">{message.content}</p>
       {claimTexts.length > 0 ? (
         <ul className="bubble-claims">
@@ -43,7 +47,10 @@ export function MessageBubble({
         </ul>
       ) : null}
       {message.declined ? (
-        <span className="bubble-declined">Declined (out of scope)</span>
+        <span className="bubble-declined">
+          <AlertIcon size={14} />
+          Declined (out of scope)
+        </span>
       ) : null}
     </button>
   );
